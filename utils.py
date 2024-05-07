@@ -1,5 +1,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from Parser.google_finance_parser import get_data
+from DataBase.database_operations import add_data_database
+
+
+def update_database():
+    # Получаем данные
+    data = get_data()
+    # Добавляем данные в базу данных
+    add_data_database(data)
+    print('Database updated')
 
 
 def create_excel_from_db(data):
@@ -44,3 +54,7 @@ def create_excel_from_db(data):
 
         # Вставка изображения графика в ячейку E2
         worksheet.insert_image('E2', 'exchange_rates.png', {'x_scale': 0.5, 'y_scale': 0.5})
+
+
+if __name__ == "__main__":
+    update_database()
