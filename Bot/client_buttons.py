@@ -7,4 +7,5 @@ start_kb = ReplyKeyboardMarkup(
             KeyboardButton(text='Get exchange rate')
         ],
     ],
+    resize_keyboard=True,
 )
