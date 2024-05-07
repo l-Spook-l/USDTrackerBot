@@ -19,13 +19,14 @@ async def cmd_start(message: Message):
 @client_router.message(Command('get_exchange_rate'))
 @client_router.message(F.text.lower() == 'get exchange rate')
 async def get_exchange_rate(message: Message):
+    # Retrieving data from the database.
     data = get_data_database()
+    # Updating the xlsx file based on the received data.
     create_excel_from_db(data)
 
-    # Получаем текущий рабочий каталог
+    # Fetching the current working directory.
     current_directory = os.getcwd()
 
-    # Путь к файлу для отправки
     file_path = os.path.join(current_directory, "Today's currency exchange rate.xlsx")
 
     await message.reply_document(

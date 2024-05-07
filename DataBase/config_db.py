@@ -9,8 +9,8 @@ class Base(DeclarativeBase):
 
 
 engine = create_engine(
-    url=DATABASE_URL,  # путь к бд
-    echo=False,  # логи запроса
+    url=DATABASE_URL,
+    echo=False,
 )
 
 session = sessionmaker(engine, expire_on_commit=False)

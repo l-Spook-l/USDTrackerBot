@@ -1,32 +1,37 @@
-import asyncio
 import datetime
+import asyncio
+import schedule
 from config import dp, bot
+from utils import update_database
 
 
-async def check_update_database():
-    print('Start check exchange rate')
-    time_correction = datetime.timedelta(seconds=0)  # Инициализация коррекции времени
+async def check_time():
+    print('Start check update database')
+
+    # Scheduling the task to run every hour
+    schedule.every().hour.at(":00").do(update_database)
+
+    time_correction = datetime.timedelta(seconds=0)
     while True:
-        await asyncio.sleep(10 - time_correction.total_seconds())  # Ожидание 10 секунд с учетом коррекции времени
+        await asyncio.sleep(60 - time_correction.total_seconds())
         now = datetime.datetime.now()
-        print('=================Time now: ', datetime.datetime.now(), '===================================')
+        schedule.run_pending()
+        # Removing the margin of error
         time_correction = datetime.datetime.now() - now
-        print(f'###################### Uncertainty - {time_correction.total_seconds()} ###############################')
 
 
 async def start_bot():
     print('Bot online!')
-    await dp.start_polling(bot)  # Запуск бота
+    await dp.start_polling(bot)
 
 
-async def run_bot():
-    tasks = [check_update_database(), start_bot()]  # Задачи для параллельного выполнения
-    await asyncio.gather(*tasks)  # ожидает завершения всех задач из списка tasks.
-    # Это позволяет выполнить обе задачи параллельно и подождать, пока они завершатся.
+async def main():
+    tasks = [check_time(), start_bot()]
+    await asyncio.gather(*tasks)
 
 
 if __name__ == "__main__":
     try:
-        asyncio.run(run_bot())  # Запуск основной программы
+        asyncio.run(main())
     except KeyboardInterrupt:
-        print("Exit")  # Вывод сообщения при прерывании программы пользователем
+        print("Exit")

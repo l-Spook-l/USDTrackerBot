@@ -16,11 +16,9 @@ def add_data_database(data: dict) -> bool:
         return False
 
 
-def get_data_database():
-    # SELECT * from currency_rate_table where DATE(Timestamp) = CURRENT_DATE;
+def get_data_database() -> CurrencyRate | bool:
     try:
         with session() as s:
-            # Получаем текущую дату
             query = select(CurrencyRate).filter(func.Date(CurrencyRate.Timestamp) == date.today())
             res = s.execute(query)
             result = res.all()
