@@ -5,15 +5,15 @@ from DataBase.database_operations import add_data_database
 
 
 def update_database():
-    # Получаем данные
+    # Fetching data
     data = get_data()
-    # Добавляем данные в базу данных
+    # Adding data to the database
     add_data_database(data)
     print('Database updated')
 
 
 def create_excel_from_db(data):
-    # Создание DataFrame с данными о курсе валют относительно времени
+    # Creating a DataFrame with currency exchange rate data over time
     data_test = {
         'Time': [],
         'Exchange rate': [],
@@ -21,19 +21,13 @@ def create_excel_from_db(data):
 
     if data:
         for user_data in data:
-            # print(r)
-            # r += 1
             user_settings = user_data[0]
             data_test['Time'].append(user_settings.Timestamp)
             data_test['Exchange rate'].append(user_settings.Exchange_rate)
-            # print(user_settings.Currency_pair)
-            # print(user_settings.Exchange_rate)
-            # print(user_settings.Timestamp)
-            # print('========================')
 
     df = pd.DataFrame(data_test)
 
-    # Построение графика
+    # Plotting the graph
     plt.figure(figsize=(12, 8))
     plt.plot(df['Time'], df['Exchange rate'], marker='o', label='USD')
     plt.title('Exchange Rates Over Time')
@@ -42,17 +36,17 @@ def create_excel_from_db(data):
     plt.legend()
     plt.grid(True)
 
-    # Сохранение графика в файл
+    # Saving the graph to a file
     plt.savefig('exchange_rates.png')
 
-    # Сохранение данных и графика в Excel с использованием xlsxwriter
+    # Saving data and graph to Excel using xlsxwriter
     with pd.ExcelWriter("Today's currency exchange rate.xlsx", engine='xlsxwriter') as writer:
         df.to_excel(writer, sheet_name='Exchange Rates', index=False)
 
-        # Получение ссылки на лист Excel
+        # Obtaining a link to the Excel sheet
         worksheet = writer.sheets['Exchange Rates']
 
-        # Вставка изображения графика в ячейку E2
+        # Inserting the graph image into cell E2.
         worksheet.insert_image('E2', 'exchange_rates.png', {'x_scale': 0.5, 'y_scale': 0.5})
 
 
